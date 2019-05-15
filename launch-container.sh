@@ -171,12 +171,6 @@ else
       echo "-------------------------------------------------------------------------"
       read copy_config
 
-      ## make sure no hidden files go into a git repo
-      touch "${ARG_HOME}/.gitignore"
-      sed_fun '/^\.\*/d' "${ARG_HOME}/.gitignore"
-
-      echo ".*" >> "${ARG_HOME}/.gitignore"
-
       if [ "${copy_config}" == "y" ]; then
         if [ -f "${HOMEDIR}/.inputrc" ] && [ ! -f "${ARG_HOME}/.inputrc" ]; then
           cp -p "${HOMEDIR}/.inputrc" "${ARG_HOME}/.inputrc"
@@ -243,6 +237,11 @@ else
       fi
     fi
     HOMEDIR="${ARG_HOME}"
+
+    # make sure no hidden files go into a git repo
+    touch "${HOMEDIR}/.gitignore"
+    sed_fun '/^\.\*/d' "${HOMEDIR}/.gitignore"
+    echo ".*" >> "${HOMEDIR}/.gitignore"
   fi
 
   BUILD_DATE=$(docker inspect -f '{{.Created}}' ${IMAGE}:${IMAGE_VERSION})
